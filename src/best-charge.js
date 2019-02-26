@@ -55,7 +55,7 @@ function CalcCost(ItemJson){
     { cost2+=ItemJson[j].price*ItemJson[j].num;}
   }
 
-  let cost1String = PromItem[0].type;
+  let cost1String = PromItem[0].type+'，省6元';
   let cost2String=PromItem[1].type+'(';
 
   for(let i in cost2Array)
@@ -75,7 +75,7 @@ function CalcCost(ItemJson){
     if(cost1>=30)
     {
       if((cost1-6)<=cost2)
-      { costReturn.string=cost1String;costReturn.cost=cost1;}
+      { costReturn.string=cost1String;costReturn.cost=cost1-6;}
       else
       { costReturn.string=cost2String;costReturn.cost=cost2;}
     }
