@@ -24,15 +24,13 @@ module.exports = function bestCharge(selectedItems) {
       }
     }
   }
-  console.log(ItemArray);
-  let s=CalcCost(ItemArray);
-  console.log(s);
-  return s;
+  let costResult=CalcCost(ItemArray);
+  console.log(costResult);
+  let printStr=PrintResult(ItemArray,costResult);
+  console.log(printStr);
+  return printStr;
 }
 
-/**
- * @return {string}
- */
 function CalcCost(ItemJson){
   let PromItem=loadPromotions();
   //满30减6折扣计算
@@ -67,18 +65,42 @@ function CalcCost(ItemJson){
   cost2String=cost2String.substr(0, cost2String.length - 1);
   cost2String+=')，省'+ cost2Discount.toString()+'元';
 
+  let costReturn={};
+  costReturn.string='';
+  costReturn.cost=0;
   if(cost1<30 &&cost2Discount==0)
-  { return '';}
+  { costReturn.cost=cost1;}
   else
   {
     if(cost1>=30)
     {
       if((cost1-6)<=cost2)
-      { return cost1String;}
+      { costReturn.string=cost1String;costReturn.cost=cost1;}
       else
-      { return cost2String;}
+      { costReturn.string=cost2String;costReturn.cost=cost2;}
     }
     else
-    { return cost2String}
+    { costReturn.string=cost2String;costReturn.cost=cost2;}
   }
+  return costReturn;
+}
+
+function PrintResult(ItemJson,costJson){
+  let ResultCtring='';
+  ResultCtring+='============= 订餐明细 =============\n';
+  for(let i in ItemJson)
+  {
+    let Str=ItemJson[i].name+' x '+ItemJson[i].num+' = '+ItemJson[i].num*ItemJson[i].price+'元\n';
+    ResultCtring+=Str;
+  }
+  ResultCtring+='-----------------------------------\n';
+  if(costJson.string!='')
+  {
+    ResultCtring+='使用优惠:\n';
+    ResultCtring+=costJson.string+'\n';
+    ResultCtring+='-----------------------------------\n';
+  }
+  ResultCtring+='总计：'+costJson.cost+'元'+'\n';
+  ResultCtring+='===================================';
+  return ResultCtring;
 }
