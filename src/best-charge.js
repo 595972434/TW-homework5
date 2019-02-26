@@ -1,6 +1,4 @@
-var loadAllItems = require('./items');
-var loadPromotions = require('./promotions');
-module.exports = function bestCharge(inputString) {
+function bestCharge(inputString) {
 
   let ItemJson=GetInput(inputString);
 
