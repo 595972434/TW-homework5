@@ -1,3 +1,70 @@
+## 点餐系统程序结构分析
+
+分析任务的需求，可以发现该任务可以分为3大块来处理：
+
+1. 输入信息处理
+2. 点餐花费结算
+3. 输出字符串整合
+
+#### 程序的管道图如下：
+
+![](C:/Users/Administrator/Desktop/pic.png)
+
+1. 输入信息处理过程通过输入的字符串以及loadAllItems获取输入菜品的id，名称，数量，价格信息，输出上述信息的JSON格式。
+2. 点餐花费结算阶段通过loadPromotions获取所点菜品的折扣，计算点餐菜品的总花费，输出折扣计算方式和折扣后的价格。
+3. 根据所点菜品名称和折扣计算方式，以任务要求的格式整合字符串结果。
+
+#### 任务分解
+
+```javascript
+#GetInput()输入数据处理
+输入：
+	InputString；
+    ItemsInfo[{
+    	id: String,
+   		name: String,
+    	price: Number
+  }]
+输出：
+	ItemJson[{
+    	id:String,
+        name:String,
+        num:String,
+        price:String
+	}]
+#CalcCost()点餐花费结算
+输入：
+	ItemJson[{
+    	id:String,
+        name:String,
+        num:String,
+        price:String
+	}]
+	Promotions[{
+    	type: String,
+    	items: Array
+  	}]
+输出：
+	CostJson[{
+    	string:String,
+        cost:Number
+	}]
+#PrintString()输出字符串整合
+输入：
+	ItemJson[{
+    	id:String,
+        name:String,
+        num:String,
+        price:String
+	}]
+	CostJson[{
+    	string:String,
+        cost:Number
+	}]
+输出：ResultString：String
+```
+
+--------------------------------------------------------------------------------------------
 
 ## 需求描述
 

@@ -1,106 +1,112 @@
 var loadAllItems = require('./items');
 var loadPromotions = require('./promotions');
-module.exports = function bestCharge(selectedItems) {
+module.exports = function bestCharge(inputString) {
 
-  let ItemArray=[];
-  let allItem=loadAllItems();
+  let ItemJson=GetInput(inputString);
 
-  for(let index in selectedItems)
+  let CostJson=CalcCost(ItemJson);
+
+  let ResultString=PrintResult(ItemJson,CostJson);
+
+  return ResultString;
+}
+
+function GetInput(inputString){
+  let itemJson=[];
+  let ItemInfo=loadAllItems();
+
+  for(let index in inputString)
   {
-    let itemName=selectedItems[index].split(' ')[0];
-    let itemNum=selectedItems[index].split(' ')[2];
+    let itemName=inputString[index].split(' ')[0];
+    let itemNum=inputString[index].split(' ')[2];
 
-    for(let i in allItem)
+    for(let i in ItemInfo)
     {
-     if (allItem[i].id==itemName)
+      if (ItemInfo[i].id==itemName)
       {
         let addItem = {};
-        addItem.id=allItem[i].id;
-        addItem.name=allItem[i].name;
+        addItem.id=ItemInfo[i].id;
+        addItem.name=ItemInfo[i].name;
         addItem.num=itemNum;
-        addItem.price=allItem[i].price;
-        ItemArray.push(addItem);
+        addItem.price=ItemInfo[i].price;
+        itemJson.push(addItem);
         break;
       }
     }
   }
-  let costResult=CalcCost(ItemArray);
-  console.log(costResult);
-  let printStr=PrintResult(ItemArray,costResult);
-  console.log(printStr);
-  return printStr;
+  return itemJson;
 }
 
-function CalcCost(ItemJson){
-  let PromItem=loadPromotions();
+function CalcCost(itemJson){
+  let Promotion=loadPromotions();
+
   //满30减6折扣计算
   let cost1=0;
-  for(let i in ItemJson)
-  {
-    cost1+=ItemJson[i].price*ItemJson[i].num;
-  }
+  for(let i in itemJson)
+  { cost1+=itemJson[i].price*itemJson[i].num;}
+
   //指定菜品半价折扣计算
   let cost2=0;
   let cost2Discount=0;
-  let cost2Array=[];
-  for(let j in ItemJson)
+  let cost2NameArray=[];
+  for(let j in itemJson)
   {
-    if(PromItem[1].items.indexOf(ItemJson[j].id)>=0)
+    if(Promotion[1].items.indexOf(itemJson[j].id)>=0)
     {
-      cost2Array.push(ItemJson[j].name);
-      cost2+=(ItemJson[j].price/2*ItemJson[j].num);
-      cost2Discount+=(ItemJson[j].price/2*ItemJson[j].num);
+      cost2NameArray.push(itemJson[j].name); //记录打折菜品名称
+      cost2+=(itemJson[j].price/2*itemJson[j].num);
+      cost2Discount+=(itemJson[j].price/2*itemJson[j].num); //记录减免金额
     }
     else
-    { cost2+=ItemJson[j].price*ItemJson[j].num;}
+    { cost2+=itemJson[j].price*itemJson[j].num;}
   }
 
-  let cost1String = PromItem[0].type+'，省6元';
-  let cost2String=PromItem[1].type+'(';
+  let cost1String = Promotion[0].type+'，省6元';
+  let cost2String=Promotion[1].type+'(';
 
-  for(let i in cost2Array)
+  for(let i in cost2NameArray)
   {
-    cost2String+=cost2Array[i]+'，';
+    cost2String+=cost2NameArray[i]+'，';
   }
   cost2String=cost2String.substr(0, cost2String.length - 1);
   cost2String+=')，省'+ cost2Discount.toString()+'元';
 
-  let costReturn={};
-  costReturn.string='';
-  costReturn.cost=0;
+  let costJson={};
+  costJson.string='';
+  costJson.cost=0;
   if(cost1<30 &&cost2Discount==0)
-  { costReturn.cost=cost1;}
+  { costJson.cost=cost1;}
   else
   {
     if(cost1>=30)
     {
       if((cost1-6)<=cost2)
-      { costReturn.string=cost1String;costReturn.cost=cost1-6;}
+      { costJson.string=cost1String;costJson.cost=cost1-6;}
       else
-      { costReturn.string=cost2String;costReturn.cost=cost2;}
+      { costJson.string=cost2String;costJson.cost=cost2;}
     }
     else
-    { costReturn.string=cost2String;costReturn.cost=cost2;}
+    { costJson.string=cost2String;costJson.cost=cost2;}
   }
-  return costReturn;
+  return costJson;
 }
 
-function PrintResult(ItemJson,costJson){
-  let ResultCtring='';
-  ResultCtring+='============= 订餐明细 =============\n';
-  for(let i in ItemJson)
+function PrintResult(itemJson,costJson){
+  let resultString='';
+  resultString+='============= 订餐明细 =============\n';
+  for(let i in itemJson)
   {
-    let Str=ItemJson[i].name+' x '+ItemJson[i].num+' = '+ItemJson[i].num*ItemJson[i].price+'元\n';
-    ResultCtring+=Str;
+    let Str=itemJson[i].name+' x '+itemJson[i].num+' = '+itemJson[i].num*itemJson[i].price+'元\n';
+    resultString+=Str;
   }
-  ResultCtring+='-----------------------------------\n';
+  resultString+='-----------------------------------\n';
   if(costJson.string!='')
   {
-    ResultCtring+='使用优惠:\n';
-    ResultCtring+=costJson.string+'\n';
-    ResultCtring+='-----------------------------------\n';
+    resultString+='使用优惠:\n';
+    resultString+=costJson.string+'\n';
+    resultString+='-----------------------------------\n';
   }
-  ResultCtring+='总计：'+costJson.cost+'元'+'\n';
-  ResultCtring+='===================================';
-  return ResultCtring;
+  resultString+='总计：'+costJson.cost+'元'+'\n';
+  resultString+='===================================';
+  return resultString;
 }
