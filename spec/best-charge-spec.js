@@ -1,6 +1,6 @@
 const bestCharge = require('../src/best-charge');
 describe('Take out food', function () {
-/*
+
   it('should generate best charge when best is 指定菜品半价', function() {
     let inputs = ["ITEM0001 x 1", "ITEM0013 x 2", "ITEM0022 x 1"];
     let summary = bestCharge(inputs).trim();
@@ -17,7 +17,7 @@ describe('Take out food', function () {
 ===================================`.trim()
     expect(summary).toEqual(expected)
   });
-*/
+
   it('should generate best charge when best is 满30减6元', function() {
     let inputs = ["ITEM0013 x 4", "ITEM0022 x 1"];
     let summary = bestCharge(inputs).trim();
