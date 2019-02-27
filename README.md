@@ -8,7 +8,7 @@
 
 #### 程序的管道图如下：
 
-![](C:/Users/Administrator/Desktop/pic.png)
+![](pic.png)
 
 1. 输入信息处理过程通过输入的字符串以及loadAllItems获取输入菜品的id，名称，数量，价格信息，输出上述信息的JSON格式。
 2. 点餐花费结算阶段通过loadPromotions获取所点菜品的折扣，计算点餐菜品的总花费，输出折扣计算方式和折扣后的价格。
