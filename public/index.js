@@ -2,11 +2,26 @@
 // 同时删除该注释
 
 function calculatePrice() {
-  // 想办法调用`bestCharge`并且把返回的字符串
-  // 显示在html页面的`message`中
+  let inputString=[];
+  for(let i in itemInfo)
+  {
+    let id='input'+i;
+    let num = document.getElementById(id).value;
+    if(num>0)
+    {
+      let Str=itemInfo[i].id+' x '+num;
+      inputString.push(Str);
+    }
+  }
+  let resultString = bestCharge(inputString)
+  document.getElementById("message").innerHTML =resultString;
 }
 
-function clear() {
-  // 清除用户的选择，以及页面显示的信息
-  // 清除之后，用户可以继续正常使用各项功能
+function Clear() {
+  for (let i in itemInfo) {
+    let id = 'input' + i;
+    document.getElementById(id).value = '0';
+    document.getElementById("message").innerHTML ='/* 请将结算后产生的汇总字符串显示在这里 */';
+  }
 }
+
